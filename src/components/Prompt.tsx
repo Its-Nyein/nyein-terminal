@@ -1,0 +1,99 @@
+import React, { useEffect, useRef, useState, type FormEvent } from "react";
+import { getPrompt } from "../utils/fetch";
+import { handleGeneralCommands } from "../utils/general";
+import { useKeyboardHandlers } from "../utils/keyboard";
+import { useTheme } from "../utils/themes";
+
+interface PromptProps {
+  setPrompts: (updater: ((prev: number) => number) | number) => void;
+  updateHistory: (updater: (hist: string[]) => string[]) => void;
+  history: string[];
+}
+
+export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
+  const [out, setOut] = useState<string>("");
+  const [historyIndex, setHistoryIndex] = useState<number>(0);
+  const [prompt, setPrompt] = useState<string>("");
+  const [submittedCommand, setSubmittedCommand] = useState<string>("");
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const inputRef = useRef<HTMLInputElement>(
+    null
+  ) as React.RefObject<HTMLInputElement>;
+  const [, nextTheme] = useTheme();
+
+  useEffect(() => {
+    getPrompt().then(setPrompt);
+  }, []);
+
+  useEffect(() => {
+    if (inputRef.current && !isSubmitted) {
+      inputRef.current.focus();
+    }
+  }, [isSubmitted]);
+
+  const handleKeyDown = useKeyboardHandlers(
+    inputRef,
+    history,
+    historyIndex,
+    setHistoryIndex,
+    setPrompts
+  );
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const input = inputRef.current;
+    if (!input) return;
+
+    const inputValue = input.value;
+    if (inputValue.trim() === "") return;
+
+    setIsSubmitted(true);
+    setSubmittedCommand(inputValue);
+
+    if (formRef.current) {
+      formRef.current.setAttribute("inert", "");
+    }
+    input.setAttribute("inert", "");
+
+    await handleGeneralCommands(
+      inputValue,
+      setOut,
+      setPrompts,
+      updateHistory,
+      history,
+      nextTheme
+    );
+
+    setHistoryIndex(0);
+  };
+
+  return (
+    <>
+      <form id="prompt-form" onSubmit={onSubmit} ref={formRef}>
+        <p className="inline">{prompt}</p>
+        <input
+          id="prompt-input"
+          autoComplete="off"
+          className="inp"
+          type="text"
+          maxLength={38}
+          spellCheck={false}
+          onKeyDown={handleKeyDown}
+          ref={inputRef}
+          disabled={isSubmitted}
+          defaultValue={isSubmitted ? submittedCommand : ""}
+          readOnly={isSubmitted}
+        />
+      </form>
+      {out && (
+        <pre>
+          <div
+            className="output"
+            dangerouslySetInnerHTML={{ __html: out }}
+          ></div>
+        </pre>
+      )}
+    </>
+  );
+}

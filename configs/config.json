@@ -1,0 +1,69 @@
+{
+  "username": "nyeinphyoaung",
+  "github": "Its-Nyein",
+
+  "about": {
+    "name": "Nyein Phyo Aung",
+    "intro": "Hi, I'm Nyein Phyo Aung. I'm software developer specialize in building and maintaining web applications using JavaScript and modern frameworks. I'm committed to improving my skills with a focus on delivering high-quality, user-friendly experiences. Passionate about continuous learning, I stay updated with industry trends and strive to create efficient, scalable solutions.",
+
+    "techStack": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "TypeScript",
+      "Go",
+      "React.js",
+      "Angular",
+      "Vue.js",
+      "Next.js",
+      "Vite",
+      "Shadcn UI",
+      "MUI Material",
+      "Redux Toolkit",
+      "Zod",
+      "Zustand",
+      "Tanstack Query",
+      "Tanstack Table",
+      "Node.js",
+      "Express.js",
+      "NestJs",
+      "MySQL",
+      "MSSQL",
+      "PrismaORM",
+      "SQLite",
+      "PostgreSQL",
+      "Firebase",
+      "MongoDB",
+      "Git",
+      "Linux"
+    ],
+
+    "experience": [
+      {
+        "title": "Associate Developer",
+        "company": "Partner Associate",
+        "duration": "Apr 2024 - Nov 2024",
+        "description": [
+          "Developed responsive Angular SPAs leveraging two-way data binding, dependency injection, and component-based architecture for clients in aviation, government, and telecom",
+          "Designed and optimized MySQL databases with efficient schemas and complex queries to support web applications",
+          "Assisted in data migration projects using SSMS and MySQL, developing scripts for data extraction and transformation",
+          "Collaborated in Agile/Scrum environments, participating in sprint planning and cross-functional team delivery"
+        ]
+      }
+    ],
+
+    "education": [
+      {
+        "institute": "University of Technology - Yatanarpon Cyber City",
+        "major": "Information Science Technology",
+        "duration": "Dec 2017 - Mar 2020"
+      }
+    ]
+  },
+
+  "links": {
+    "github": "Its-Nyein",
+    "email": "nyeinphyoaung.edu@gmail.com",
+    "linkedin": "in/nyeinphyoaung"
+  }
+}
