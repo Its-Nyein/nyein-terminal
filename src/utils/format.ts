@@ -1,6 +1,5 @@
 import type { About, Profile, Repository, Links } from "../types/structs";
 
-// ASCII art used for Github
 const NEOFETCH = `
    .x+=:.                                     
   z\`    ^%                          .uef^"    
@@ -24,7 +23,47 @@ const BLOCKS =
 
 const RUST = '<span style="color:#E43717;">**</span>';
 const PYTHON = '<span style="color:#4989BC;">//</span>';
-const GITHUB = '<span style="color:#FFFFFF;">@</span>';
+
+const GO_ASCII = `
+MM'"""""\`MM MMP"""""YMM 
+M' .mmm. \`M M' .mmm. \`M 
+M  MMMMMMMM M  MMMMM  M 
+M  MMM   \`M M  MMMMM  M 
+M. \`MMM' .M M. \`MMM' .M 
+MM.     .MM MMb     dMM 
+MMMMMMMMMMM MMMMMMMMMMM 
+
+`;
+
+const TYPESCRIPT_ASCII = `
+M""""""""M MP""""""\`MM 
+Mmmm  mmmM M  mmmmm..M 
+MMMM  MMMM M.      \`YM 
+MMMM  MMMM MMMMMMM.  M 
+MMMM  MMMM M. .MMM'  M 
+MMMM  MMMM Mb.     .dM 
+MMMMMMMMMM MMMMMMMMMMM 
+
+`;
+
+const JAVASCRIPT_ASCII = `
+MMMMMMMM""M MP""""""\`MM 
+MMMMMMMM  M M  mmmmm..M 
+MMMMMMMM  M M.      \`YM 
+MMMMMMMM  M MMMMMMM.  M 
+M. \`MMM' .M M. .MMM'  M 
+MM.     .MM Mb.     .dM 
+MMMMMMMMMMM MMMMMMMMMMM 
+
+`;
+
+const DEFAULT_ASCII = `
+   ╔═══╗
+  ║ @ ║
+   ╚═╦═╝
+     ║
+    ╔╩╗
+   ╚══╝`;
 
 export function formatAbout(about: About): string {
   const eduString = about.education
@@ -246,7 +285,13 @@ function langIcon(lang: string): string {
     case "Python":
     case "Jupyter Notebook":
       return PYTHON;
+    case "Go":
+      return GO_ASCII;
+    case "TypeScript":
+      return TYPESCRIPT_ASCII;
+    case "JavaScript":
+      return JAVASCRIPT_ASCII;
     default:
-      return GITHUB;
+      return DEFAULT_ASCII;
   }
 }

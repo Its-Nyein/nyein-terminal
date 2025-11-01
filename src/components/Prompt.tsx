@@ -78,7 +78,7 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
     if (!input) return;
 
     const inputValue = input.value;
-    if (inputValue.trim() === "") return;
+    const isEmpty = inputValue.trim() === "";
 
     setIsSubmitted(true);
     setSubmittedCommand(inputValue);
@@ -87,6 +87,16 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
       formRef.current.setAttribute("inert", "");
     }
     input.setAttribute("inert", "");
+
+    if (isEmpty) {
+      setOut("");
+      setHistoryIndex(0);
+      setPrompts((prev: number) => {
+        const next = prev + 1;
+        return next >= 255 ? 0 : next;
+      });
+      return;
+    }
 
     await handleGeneralCommands(
       inputValue,

@@ -26,7 +26,7 @@ export async function handleGeneralCommands(
     }
     case "theme": {
       if (args.trim() === "") {
-        setOut(`Usage: theme set <theme-name>\n\neg: theme set nord`);
+        setOut(`Themes: ${THEMES.join(", ")}\nUsage: theme set <theme-name>\n\neg: theme set nord`);
       } else {
         const [subCmd, themeName] = args.trim().split(/\s+/);
         if (subCmd === "set" && themeName) {
