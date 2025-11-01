@@ -25,6 +25,34 @@ Hello, welcome to <u class="blu semibold">Nyein Terminal</u> [WIP]. Type one of 
 You can use <i>arrow keys</i> to scroll through history.
 `;
 
+export const CREDITS: string = `
+<span class="grn">
+███╗   ██╗██╗   ██╗███████╗██╗███╗   ██╗    ██████╗ ██╗  ██╗██╗   ██╗ ██████╗      █████╗ ██╗   ██╗███╗   ██╗ ██████╗ 
+████╗  ██║╚██╗ ██╔╝██╔════╝██║████╗  ██║    ██╔══██╗██║  ██║╚██╗ ██╔╝██╔═══██╗    ██╔══██╗██║   ██║████╗  ██║██╔════╝ 
+██╔██╗ ██║ ╚████╔╝ █████╗  ██║██╔██╗ ██║    ██████╔╝███████║ ╚████╔╝ ██║   ██║    ███████║██║   ██║██╔██╗ ██║██║  ███╗
+██║╚██╗██║  ╚██╔╝  ██╔══╝  ██║██║╚██╗██║    ██╔═══╝ ██╔══██║  ╚██╔╝  ██║   ██║    ██╔══██║██║   ██║██║╚██╗██║██║   ██║
+██║ ╚████║   ██║   ███████╗██║██║ ╚████║    ██║     ██║  ██║   ██║   ╚██████╔╝    ██║  ██║╚██████╔╝██║ ╚████║╚██████╔╝
+╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝╚═╝  ╚═══╝    ╚═╝     ╚═╝  ╚═╝   ╚═╝    ╚═════╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝
+</span>
+<span class="rd semibold">APIs used -</span>
+
+* <a 
+    href="https://docs.github.com/en/rest/about-the-rest-api"
+    target="_blank"
+    class="blu semibold">Github REST API</a>
+
+* <a 
+    href="https://pinned.berrysauce.me"
+    target="_blank" 
+    class="blu semibold">Pinned repos</a> - berrysauce/pinned
+
+* <a 
+    href="https://github.com/idealclover/GitHub-Star-Counter"
+    target="_blank"
+    class="blu semibold">Total stars and forks</a> - idealclover/GitHub-Star-Counter
+
+`;
+
 export const READ_JSON_ERROR: string =
   "<span class='rd semibold'>Error reading config.json</span>";
 

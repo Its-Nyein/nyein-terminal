@@ -1,4 +1,4 @@
-import { HELP } from "./texts";
+import { CREDITS, HELP } from "./texts";
 import {
   getAbout,
   getGithub,
@@ -29,6 +29,8 @@ export async function command(input0: string, input1: string) {
         return await getRepos();
       case "links":
         return await getContacts();
+      case "credits":
+        return CREDITS;
       case "cd":
         return "Nowhere to go.";
       case "mkdir":
