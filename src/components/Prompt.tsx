@@ -32,6 +32,33 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
     }
   }, [isSubmitted]);
 
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (inputRef.current && !isSubmitted) {
+        const target = e.target as HTMLElement;
+        const tagName = target.tagName;
+        const isInteractive = tagName === 'INPUT' || 
+                             tagName === 'BUTTON' || 
+                             tagName === 'A' || 
+                             tagName === 'SELECT' ||
+                             target.closest('a');
+        
+        if (!isInteractive) {
+          setTimeout(() => {
+            if (inputRef.current && !isSubmitted && document.activeElement !== inputRef.current) {
+              inputRef.current.focus();
+            }
+          }, 0);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, [isSubmitted]);
+
   const handleKeyDown = useKeyboardHandlers(
     inputRef,
     history,
