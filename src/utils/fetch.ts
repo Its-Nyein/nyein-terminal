@@ -24,7 +24,9 @@ export async function loadConfig(): Promise<Config | null> {
   }
 
   try {
-    const response = await fetch("/configs/config.json");
+    const baseUrl = import.meta.env.BASE_URL;
+    const configPath = `${baseUrl}configs/config.json`.replace(/\/\//g, "/");
+    const response = await fetch(configPath);
     if (!response.ok) {
       return null;
     }
