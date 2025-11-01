@@ -40,6 +40,23 @@
 
     "experience": [
       {
+        "title": "Web Developer",
+        "company": "Plus Impact",
+        "duration": "August 2025 - Present"
+      },
+      {
+        "title": "Full-stack Developer",
+        "company": "Blue Ocean Operating Management (BOOM)",
+        "duration": "Jan 2025 - Present",
+        "description": [
+          "Built comprehensive UI component libraries for internal use, ensuring consistency and reusability across projects",
+          "Developed scalable backend services using NestJS, enhancing application performance and API architecture",
+          "Designed and optimized database schemas for complex business requirements, improving data handling efficiency",
+          "Maintained high code quality through linting standards, code reviews, and performance optimizations",
+          "Deployed and maintained applications on cloud infrastructure, ensuring scalability, security, and reliability"
+        ]
+      },
+      {
         "title": "Associate Developer",
         "company": "Partner Associate",
         "duration": "Apr 2024 - Nov 2024",

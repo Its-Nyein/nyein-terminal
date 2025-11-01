@@ -9,6 +9,7 @@ import { formatAbout } from "../utils/format";
 import { formatProfile } from "../utils/format";
 import { formatRepos } from "../utils/format";
 import { formatLinks } from "../utils/format";
+import { formatExperience } from "../utils/format";
 import { READ_JSON_ERROR, FETCH_GITHUB_ERROR } from "./texts";
 
 let configCache: Config | null = null;
@@ -17,7 +18,7 @@ let githubCache: string | null = null;
 let reposCache: string | null = null;
 let contactsCache: string | null = null;
 
-async function loadConfig(): Promise<Config | null> {
+export async function loadConfig(): Promise<Config | null> {
   if (configCache !== null) {
     return configCache;
   }
@@ -137,4 +138,13 @@ export async function getContacts(): Promise<string> {
 
   contactsCache = formatLinks(config.links) as string;
   return contactsCache as string;
+}
+
+export async function getExperience(): Promise<string> {
+  const config = await loadConfig();
+  if (!config) {
+    return READ_JSON_ERROR;
+  }
+
+  return formatExperience(config.about.experience);
 }

@@ -6,5 +6,5 @@ import { Base } from "./components/Base";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Base />
-  </StrictMode>
+  </StrictMode>,
 );

@@ -6,7 +6,7 @@ export function useKeyboardHandlers(
   history: string[],
   historyIndex: number,
   setHistoryIndex: React.Dispatch<React.SetStateAction<number>>,
-  setPrompts: (updater: ((prev: number) => number) | number) => void
+  setPrompts: (updater: ((prev: number) => number) | number) => void,
 ) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const input = inputRef.current;

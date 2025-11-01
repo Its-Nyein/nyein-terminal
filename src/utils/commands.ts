@@ -1,5 +1,12 @@
 import { HELP } from "./texts";
-import { getAbout, getGithub, getRepos, getContacts } from "./fetch";
+import {
+  getAbout,
+  getGithub,
+  getRepos,
+  getContacts,
+  getExperience,
+  loadConfig,
+} from "./fetch";
 
 export async function command(input0: string, input1: string) {
   const result = await (async () => {
@@ -10,6 +17,9 @@ export async function command(input0: string, input1: string) {
         return HELP;
       case "about":
         return await getAbout();
+      case "experience":
+      case "exp":
+        return await getExperience();
       case "github":
       case "neofetch":
       case "fastfetch":
@@ -52,12 +62,22 @@ export async function command(input0: string, input1: string) {
       case "sudo":
       case "chmod":
         return "With great power comes great responsibility.";
-      case "whoami":
-        return "Despite everything, it's still you.";
+      case "whoami": {
+        const config = await loadConfig();
+        return config?.username || "user";
+      }
       case "exit":
         return "Exit.";
-      case "echo":
-        return input1.trim();
+      case "echo": {
+        let output = input1.trim();
+        if (
+          (output.startsWith("'") && output.endsWith("'")) ||
+          (output.startsWith('"') && output.endsWith('"'))
+        ) {
+          output = output.slice(1, -1);
+        }
+        return output;
+      }
       case "":
         return "";
       default:

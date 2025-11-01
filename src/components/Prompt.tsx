@@ -18,7 +18,7 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(
-    null
+    null,
   ) as React.RefObject<HTMLInputElement>;
   const [, nextTheme] = useTheme();
 
@@ -37,15 +37,20 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
       if (inputRef.current && !isSubmitted) {
         const target = e.target as HTMLElement;
         const tagName = target.tagName;
-        const isInteractive = tagName === 'INPUT' || 
-                             tagName === 'BUTTON' || 
-                             tagName === 'A' || 
-                             tagName === 'SELECT' ||
-                             target.closest('a');
-        
+        const isInteractive =
+          tagName === "INPUT" ||
+          tagName === "BUTTON" ||
+          tagName === "A" ||
+          tagName === "SELECT" ||
+          target.closest("a");
+
         if (!isInteractive) {
           setTimeout(() => {
-            if (inputRef.current && !isSubmitted && document.activeElement !== inputRef.current) {
+            if (
+              inputRef.current &&
+              !isSubmitted &&
+              document.activeElement !== inputRef.current
+            ) {
               inputRef.current.focus();
             }
           }, 0);
@@ -53,9 +58,9 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
       }
     };
 
-    document.addEventListener('click', handleClick);
+    document.addEventListener("click", handleClick);
     return () => {
-      document.removeEventListener('click', handleClick);
+      document.removeEventListener("click", handleClick);
     };
   }, [isSubmitted]);
 
@@ -64,7 +69,7 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
     history,
     historyIndex,
     setHistoryIndex,
-    setPrompts
+    setPrompts,
   );
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -89,7 +94,7 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
       setPrompts,
       updateHistory,
       history,
-      nextTheme
+      nextTheme,
     );
 
     setHistoryIndex(0);

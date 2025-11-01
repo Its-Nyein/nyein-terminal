@@ -1,4 +1,5 @@
 import { command } from "./commands";
+import { setThemeByName, THEMES } from "./themes";
 
 export async function handleGeneralCommands(
   value: string,
@@ -6,7 +7,7 @@ export async function handleGeneralCommands(
   setPrompts: (updater: ((prev: number) => number) | number) => void,
   updateHistory: (updater: (hist: string[]) => string[]) => void,
   history: string[],
-  nextTheme: () => void
+  nextTheme: () => void,
 ): Promise<void> {
   const sanitized = value.trim().replace(/</g, "<").replace(/>/g, ">");
   const [cmd, ...rest] = sanitized.split(" ");
@@ -23,7 +24,27 @@ export async function handleGeneralCommands(
       setOut(histString);
       break;
     }
-    case "theme":
+    case "theme": {
+      if (args.trim() === "") {
+        setOut(`Usage: theme set <theme-name>\n\neg: theme set nord`);
+      } else {
+        const [subCmd, themeName] = args.trim().split(/\s+/);
+        if (subCmd === "set" && themeName) {
+          const theme = setThemeByName(themeName);
+          if (theme) {
+            setOut(`Theme set to: <b class="grn">${theme}</b>`);
+          } else {
+            const availableThemes = THEMES.join(", ");
+            setOut(
+              `<span class="rd">Invalid theme: ${themeName}</span>\nAvailable themes: ${availableThemes}`,
+            );
+          }
+        } else {
+          setOut(`Usage: theme set <theme-name>\n\neg: theme set nord`);
+        }
+      }
+      break;
+    }
     case "t":
     case "wal": {
       nextTheme();

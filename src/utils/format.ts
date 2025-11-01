@@ -27,16 +27,6 @@ const PYTHON = '<span style="color:#4989BC;">//</span>';
 const GITHUB = '<span style="color:#FFFFFF;">@</span>';
 
 export function formatAbout(about: About): string {
-  const expString = about.experience
-    .map((exp) => {
-      return `<span class="blu semibold">Title:</span> ${exp.title}
-<span class="blu semibold">Description:</span> 
-${exp.description
-  .map((s) => `<span class="blu semibold">*</span> ${s}`)
-  .join("\n")}`;
-    })
-    .join("\n");
-
   const eduString = about.education
     .map((edu) => {
       return `<span class="blu semibold">Institute: </span>${edu.institute}
@@ -52,13 +42,46 @@ ${about.intro}
 
 ${formatLangs(about.techStack)}
 
-<u class="rd semibold">Experience</u>
-
-${expString}
-
 <u class="rd semibold">Education</u>
 
 ${eduString}
+`;
+
+  return `
+
+
+
+<div class="row" style="display: flex; flex-direction: row; align-items: center; justify-content: center;"> 
+<div class="about">${text}</div>
+</div>
+`;
+}
+
+export function formatExperience(experience: About["experience"]): string {
+  const expString = experience
+    .map((exp, index) => {
+      const descriptionText =
+        exp.description && exp.description.length > 0
+          ? `\n<span class="blu semibold">Description:</span> 
+${exp.description
+  .map((s) => `<span class="blu semibold">*</span> ${s}`)
+  .join("\n")}`
+          : "";
+
+      const separator =
+        index < experience.length - 1
+          ? "\n\n<div style='margin: 25px 0; border-top: 2px solid var(--green); opacity: 0.4;'></div>\n\n"
+          : "";
+
+      return `<span class="grn semibold" style="font-size: 1.15em; display: block; margin-bottom: 8px;">${exp.title}</span>
+<span class="blu semibold">Company:</span> <span style="color: var(--white);">${exp.company}</span>
+<span class="blu semibold">Duration:</span> <span style="color: var(--white);">${exp.duration}</span>${descriptionText}${separator}`;
+    })
+    .join("");
+
+  const text = `<u class="rd semibold" style="font-size: 1.2em;">Experience</u>
+
+${expString}
 `;
 
   return `

@@ -2,7 +2,18 @@ import { useState, useCallback, useEffect } from "react";
 
 export type Theme = "catppuccin" | "nord" | "default" | "tokyonight";
 
-const THEMES: Theme[] = ["catppuccin", "nord", "default", "tokyonight"];
+export const THEMES: Theme[] = ["catppuccin", "nord", "default", "tokyonight"];
+
+export function setThemeByName(themeName: string): Theme | null {
+  const theme = themeName.toLowerCase().trim() as Theme;
+  if (THEMES.includes(theme)) {
+    localStorage.setItem("theme", theme);
+    document.documentElement.className = theme;
+    window.dispatchEvent(new CustomEvent("themechange", { detail: theme }));
+    return theme;
+  }
+  return null;
+}
 
 export function useTheme(): [Theme, () => void] {
   const [theme, setTheme] = useState<Theme>(() => {
@@ -26,6 +37,20 @@ export function useTheme(): [Theme, () => void] {
   useEffect(() => {
     document.documentElement.className = theme;
   }, [theme]);
+
+  // Listen for theme changes from outside React
+  useEffect(() => {
+    const handleThemeChange = (e: CustomEvent<Theme>) => {
+      setTheme(e.detail);
+    };
+    window.addEventListener("themechange", handleThemeChange as EventListener);
+    return () => {
+      window.removeEventListener(
+        "themechange",
+        handleThemeChange as EventListener,
+      );
+    };
+  }, []);
 
   return [theme, nextTheme];
 }
