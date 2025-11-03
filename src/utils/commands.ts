@@ -128,6 +128,8 @@ export function getAllCommands(): string[] {
     "echo",
     "clear",
     "history",
+    "theme",
+    "wal",
   ];
 }
 
