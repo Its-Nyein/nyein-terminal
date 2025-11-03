@@ -3,6 +3,7 @@ import { getPrompt } from "../utils/fetch";
 import { handleGeneralCommands } from "../utils/general";
 import { useKeyboardHandlers } from "../utils/keyboard";
 import { useTheme } from "../utils/themes";
+import { getMatchingCommands } from "../utils/commands";
 
 interface PromptProps {
   setPrompts: (updater: ((prev: number) => number) | number) => void;
@@ -16,15 +17,36 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
   const [prompt, setPrompt] = useState<string>("");
   const [submittedCommand, setSubmittedCommand] = useState<string>("");
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] =
+    useState<number>(-1);
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(
-    null,
+    null
   ) as React.RefObject<HTMLInputElement>;
   const [, nextTheme] = useTheme();
 
   useEffect(() => {
     getPrompt().then(setPrompt);
   }, []);
+
+  useEffect(() => {
+    const handleInput = () => {
+      if (!inputRef.current || isSubmitted) return;
+      const value = inputRef.current.value;
+      const matches = getMatchingCommands(value);
+      setSuggestions(matches);
+      setSelectedSuggestionIndex(-1);
+    };
+
+    const inputElement = inputRef.current;
+    if (inputElement) {
+      inputElement.addEventListener("input", handleInput);
+      return () => {
+        inputElement.removeEventListener("input", handleInput);
+      };
+    }
+  }, [isSubmitted]);
 
   useEffect(() => {
     if (inputRef.current && !isSubmitted) {
@@ -70,6 +92,11 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
     historyIndex,
     setHistoryIndex,
     setPrompts,
+    null,
+    null,
+    suggestions,
+    selectedSuggestionIndex,
+    setSelectedSuggestionIndex
   );
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -104,7 +131,7 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
       setPrompts,
       updateHistory,
       history,
-      nextTheme,
+      nextTheme
     );
 
     setHistoryIndex(0);
@@ -128,6 +155,18 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
           readOnly={isSubmitted}
         />
       </form>
+      {!isSubmitted && suggestions.length > 0 && (
+        <div className="suggestions-container">
+          {suggestions.map((suggestion, index) => (
+            <span
+              key={suggestion}
+              className={`suggestion-item ${index === selectedSuggestionIndex ? "selected" : ""}`}
+            >
+              {suggestion}
+            </span>
+          ))}
+        </div>
+      )}
       {out && (
         <pre>
           <div

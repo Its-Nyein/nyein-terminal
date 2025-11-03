@@ -13,8 +13,6 @@ export async function command(input0: string, input1: string) {
     switch (input0) {
       case "help":
         return HELP;
-      case "termfolio":
-        return HELP;
       case "about":
         return await getAbout();
       case "experience":
@@ -90,10 +88,64 @@ export async function command(input0: string, input1: string) {
   return result;
 }
 
+export function getAllCommands(): string[] {
+  return [
+    "help",
+    "about",
+    "experience",
+    "exp",
+    "github",
+    "neofetch",
+    "fastfetch",
+    "repos",
+    "onefetch",
+    "links",
+    "credits",
+    "cd",
+    "mkdir",
+    "touch",
+    "rm",
+    "rmdir",
+    "cp",
+    "mv",
+    "ls",
+    "cat",
+    "grep",
+    "which",
+    "find",
+    "pwd",
+    "nano",
+    "vi",
+    "vim",
+    "nvim",
+    "hx",
+    "emacs",
+    "su",
+    "sudo",
+    "chmod",
+    "whoami",
+    "exit",
+    "echo",
+    "clear",
+    "history",
+  ];
+}
+
+export function getMatchingCommands(input: string): string[] {
+  const trimmedInput = input.trim().toLowerCase();
+
+  if (trimmedInput.length === 0) {
+    return [];
+  }
+
+  const commands = getAllCommands();
+  return commands.filter((cmd) => cmd.toLowerCase().startsWith(trimmedInput));
+}
+
 export function autoComplete(input: string) {
   const trimmedInput = input.trim();
 
-  const commands = ["help"];
+  const commands = getAllCommands();
 
   if (trimmedInput.length > 0) {
     for (const command of commands) {

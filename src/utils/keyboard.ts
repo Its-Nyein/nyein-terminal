@@ -1,5 +1,4 @@
 import type React from "react";
-import { autoComplete } from "./commands";
 
 export function useKeyboardHandlers(
   inputRef: React.RefObject<HTMLInputElement>,
@@ -7,6 +6,11 @@ export function useKeyboardHandlers(
   historyIndex: number,
   setHistoryIndex: React.Dispatch<React.SetStateAction<number>>,
   setPrompts: (updater: ((prev: number) => number) | number) => void,
+  _tabCompletionState: unknown,
+  _setTabCompletionState: unknown,
+  suggestions: string[],
+  selectedSuggestionIndex: number,
+  setSelectedSuggestionIndex: React.Dispatch<React.SetStateAction<number>>
 ) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const input = inputRef.current;
@@ -34,7 +38,20 @@ export function useKeyboardHandlers(
       }
       case "Tab": {
         e.preventDefault();
-        input.value = autoComplete(input.value);
+
+        if (suggestions.length === 0) {
+          return;
+        }
+
+        let nextIndex;
+        if (selectedSuggestionIndex === -1) {
+          nextIndex = 0;
+        } else {
+          nextIndex = (selectedSuggestionIndex + 1) % suggestions.length;
+        }
+
+        setSelectedSuggestionIndex(nextIndex);
+        input.value = suggestions[nextIndex];
         break;
       }
     }
