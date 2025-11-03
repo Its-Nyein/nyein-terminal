@@ -12,7 +12,7 @@
 }
 
 * {
-  font-family: "JetBrains Mono";
+  font-family: "JetBrains Mono", "Consolas", "Monaco", "Courier New", monospace;
   font-size: 17px;
   background: var(--black);
   color: var(--white);
@@ -73,6 +73,24 @@ form {
   white-space: pre-wrap;
   word-wrap: break-word;
   margin-bottom: 22px;
+}
+
+/* ASCII art styling for proper rendering */
+pre {
+  white-space: pre;
+  font-variant-ligatures: none;
+  font-feature-settings: normal;
+  letter-spacing: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.output > span:has(pre),
+.output > span {
+  white-space: pre;
+  font-variant-ligatures: none;
+  font-feature-settings: normal;
+  letter-spacing: 0;
 }
 
 .about,
