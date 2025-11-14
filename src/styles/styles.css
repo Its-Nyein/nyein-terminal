@@ -12,12 +12,15 @@
 }
 
 * {
-  font-family: "JetBrains Mono", "Consolas", "Monaco", "Courier New", monospace;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 17px;
   background: var(--black);
   color: var(--white);
   text-underline-offset: 8px;
   text-decoration-thickness: 2px;
+  letter-spacing: 0.8px;
   /*text-shadow: 0px 3px 8px currentColor;*/
 }
 
@@ -91,6 +94,11 @@ pre {
   font-variant-ligatures: none;
   font-feature-settings: normal;
   letter-spacing: 0;
+}
+
+/* ASCII art inside pre tags should use monospace font */
+pre .ascii {
+  font-family: "JetBrains Mono", "Consolas", "Monaco", "Courier New", monospace !important;
 }
 
 .about,
@@ -182,7 +190,7 @@ pre {
 }
 
 .suggestion-item {
-  padding: 4px 10px;
+  padding: 2px 8px;
   border-radius: 4px;
   background: transparent;
   color: var(--white);
