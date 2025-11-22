@@ -21,6 +21,7 @@ Hello, welcome to <u class="blu semibold">Nyein Terminal</u> [WIP]. Type one of 
   <span class="rd semibold">clear</span> - Clear screen
 
 You can use <i>arrow keys</i> to scroll through history.
+Visit my website: <a href="https://nyeinphyoaung.com" target="_blank" class="blu semibold">nyeinphyoaung.com</a>
 `;
 
 export const CREDITS: string = `
