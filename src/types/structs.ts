@@ -71,4 +71,11 @@ export interface Repository {
   language: string;
 }
 
+export interface FSNode {
+  name: string;
+  type: "file" | "directory";
+  content?: string;
+  children?: FSNode[];
+}
+
 export type Theme = "catppuccin" | "nord" | "default" | "tokyonight";

@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Banner } from "./Banner";
 import { Prompt } from "./Prompt";
+import { loadConfig } from "../utils/fetch";
+import { initFilesystem } from "../utils/filesystem";
 
 export function Base() {
   const [prompts, setPrompts] = useState<number>(1);
   const [history, setHistory] = useState<string[]>([]);
   const [showBanner, setShowBanner] = useState<boolean>(true);
+
+  useEffect(() => {
+    loadConfig().then((config) => {
+      if (config) initFilesystem(config);
+    });
+  }, []);
 
   const updateHistory = (updater: (hist: string[]) => string[]) => {
     setHistory(updater);

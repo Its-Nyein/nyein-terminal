@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, type FormEvent } from "react";
-import { getPrompt } from "../utils/fetch";
+import { buildPrompt } from "../utils/fetch";
 import { handleGeneralCommands } from "../utils/general";
 import { useKeyboardHandlers } from "../utils/keyboard";
 import { useTheme } from "../utils/themes";
@@ -14,7 +14,7 @@ interface PromptProps {
 export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
   const [out, setOut] = useState<string>("");
   const [historyIndex, setHistoryIndex] = useState<number>(0);
-  const [prompt, setPrompt] = useState<string>("");
+  const [prompt] = useState<string>(() => buildPrompt());
   const [submittedCommand, setSubmittedCommand] = useState<string>("");
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -22,13 +22,9 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
     useState<number>(-1);
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(
-    null
+    null,
   ) as React.RefObject<HTMLInputElement>;
   const [, nextTheme] = useTheme();
-
-  useEffect(() => {
-    getPrompt().then(setPrompt);
-  }, []);
 
   useEffect(() => {
     const handleInput = () => {
@@ -96,7 +92,7 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
     null,
     suggestions,
     selectedSuggestionIndex,
-    setSelectedSuggestionIndex
+    setSelectedSuggestionIndex,
   );
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -131,14 +127,20 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
       setPrompts,
       updateHistory,
       history,
-      nextTheme
+      nextTheme,
     );
 
     setHistoryIndex(0);
   };
 
+  // Extract only the completable part for display (e.g., "about.txt" not "cat about.txt")
+  const displaySuggestions = suggestions.map((s) => {
+    const spaceIndex = s.indexOf(" ");
+    return spaceIndex !== -1 ? s.slice(spaceIndex + 1) : s;
+  });
+
   return (
-    <>
+    <div>
       <form id="prompt-form" onSubmit={onSubmit} ref={formRef}>
         <p className="inline">{prompt}</p>
         <input
@@ -146,7 +148,7 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
           autoComplete="off"
           className="inp"
           type="text"
-          maxLength={38}
+          maxLength={100}
           spellCheck={false}
           onKeyDown={handleKeyDown}
           ref={inputRef}
@@ -157,12 +159,12 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
       </form>
       {!isSubmitted && suggestions.length > 0 && (
         <div className="suggestions-container">
-          {suggestions.map((suggestion, index) => (
+          {displaySuggestions.map((display, index) => (
             <span
-              key={suggestion}
+              key={suggestions[index]}
               className={`suggestion-item ${index === selectedSuggestionIndex ? "selected" : ""}`}
             >
-              {suggestion}
+              {display}
             </span>
           ))}
         </div>
@@ -175,6 +177,6 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
           ></div>
         </pre>
       )}
-    </>
+    </div>
   );
 }

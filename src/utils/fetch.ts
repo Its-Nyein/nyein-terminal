@@ -12,8 +12,10 @@ import { formatLinks } from "../utils/format";
 import { formatExperience } from "../utils/format";
 import { READ_JSON_ERROR, FETCH_GITHUB_ERROR } from "./texts";
 
+import { getCwd } from "./filesystem";
+
 let configCache: Config | null = null;
-let promptCache: string | null = null;
+let usernameCache: string = "user";
 let githubCache: string | null = null;
 let reposCache: string | null = null;
 let contactsCache: string | null = null;
@@ -33,25 +35,16 @@ export async function loadConfig(): Promise<Config | null> {
 
     const config: Config = await response.json();
     configCache = config;
+    usernameCache = config.username || "user";
     return config;
   } catch {
     return null;
   }
 }
 
-export async function getPrompt(): Promise<string> {
-  if (promptCache !== null) {
-    return promptCache;
-  }
-
-  const config = await loadConfig();
-  if (config) {
-    promptCache = `${config.username}@nyein-terminal~$ `;
-  } else {
-    promptCache = "user@nyein-terminal~$ ";
-  }
-
-  return promptCache;
+export function buildPrompt(): string {
+  const cwd = getCwd();
+  return `${usernameCache}@portfolio:${cwd}$ `;
 }
 
 export async function getAbout(): Promise<string> {

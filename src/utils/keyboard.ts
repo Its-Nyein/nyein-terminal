@@ -10,7 +10,7 @@ export function useKeyboardHandlers(
   _setTabCompletionState: unknown,
   suggestions: string[],
   selectedSuggestionIndex: number,
-  setSelectedSuggestionIndex: React.Dispatch<React.SetStateAction<number>>
+  setSelectedSuggestionIndex: React.Dispatch<React.SetStateAction<number>>,
 ) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const input = inputRef.current;

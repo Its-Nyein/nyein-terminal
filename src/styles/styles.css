@@ -98,7 +98,8 @@ pre {
 
 /* ASCII art inside pre tags should use monospace font */
 pre .ascii {
-  font-family: "JetBrains Mono", "Consolas", "Monaco", "Courier New", monospace !important;
+  font-family:
+    "JetBrains Mono", "Consolas", "Monaco", "Courier New", monospace !important;
 }
 
 .about,

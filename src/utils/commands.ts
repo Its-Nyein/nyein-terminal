@@ -7,6 +7,14 @@ import {
   getExperience,
   loadConfig,
 } from "./fetch";
+import {
+  changeDirectory,
+  listDirectory,
+  readFile,
+  printWorkingDirectory,
+  getTree,
+  getPathCompletions,
+} from "./filesystem";
 
 export async function command(input0: string, input1: string) {
   const result = await (async () => {
@@ -30,26 +38,27 @@ export async function command(input0: string, input1: string) {
       case "credits":
         return CREDITS;
       case "cd":
-        return "Nowhere to go.";
+        return changeDirectory(input1.trim() || "~") ?? "";
+      case "ls":
+        return listDirectory(input1.trim() || undefined);
+      case "cat":
+        if (!input1.trim()) return "cat: missing file operand";
+        return readFile(input1.trim());
+      case "pwd":
+        return printWorkingDirectory();
+      case "tree":
+        return getTree(input1.trim() || undefined);
       case "mkdir":
       case "touch":
-        return "Nowhere to create.";
       case "rm":
       case "rmdir":
-        return "Nothing to destroy.";
       case "cp":
-        return "Nothing to duplicate.";
       case "mv":
-        return "Nowhere to move.";
-      case "ls":
-      case "cat":
-        return "Nothing to see.";
+        return `${input0}: permission denied: read-only file system`;
       case "grep":
       case "which":
       case "find":
         return "Nowhere to search.";
-      case "pwd":
-        return "You are here.";
       case "nano":
       case "vi":
       case "vim":
@@ -88,6 +97,18 @@ export async function command(input0: string, input1: string) {
   return result;
 }
 
+const FS_COMMANDS = [
+  "cd",
+  "ls",
+  "cat",
+  "rm",
+  "mkdir",
+  "touch",
+  "cp",
+  "mv",
+  "tree",
+];
+
 export function getAllCommands(): string[] {
   return [
     "help",
@@ -110,6 +131,7 @@ export function getAllCommands(): string[] {
     "mv",
     "ls",
     "cat",
+    "tree",
     "grep",
     "which",
     "find",
@@ -140,8 +162,23 @@ export function getMatchingCommands(input: string): string[] {
     return [];
   }
 
-  const commands = getAllCommands();
-  return commands.filter((cmd) => cmd.toLowerCase().startsWith(trimmedInput));
+  const parts = trimmedInput.split(/\s+/);
+
+  if (parts.length === 1) {
+    const commands = getAllCommands();
+    return commands.filter((cmd) => cmd.toLowerCase().startsWith(parts[0]));
+  }
+
+  // Command already typed — complete file path argument
+  const cmd = parts[0];
+  const pathFragment = parts.slice(1).join(" ");
+
+  if (FS_COMMANDS.includes(cmd)) {
+    const completions = getPathCompletions(pathFragment);
+    return completions.map((c) => `${cmd} ${c}`);
+  }
+
+  return [];
 }
 
 export function autoComplete(input: string) {
