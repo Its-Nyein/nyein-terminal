@@ -1,9 +1,4 @@
-import {
-  listAliases,
-  removeAlias,
-  resolveAlias,
-  setAlias,
-} from "./aliases";
+import { listAliases, removeAlias, resolveAlias, setAlias } from "./aliases";
 import { command } from "./commands";
 import { loadConfig } from "./fetch";
 import { getCwd } from "./filesystem";
