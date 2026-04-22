@@ -82,14 +82,27 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
     };
   }, [isSubmitted]);
 
+  const handleCtrlC = () => {
+    setIsSubmitted(true);
+    setSubmittedCommand(inputRef.current?.value || "");
+    setOut('<span class="rd">^C</span>');
+    if (formRef.current) formRef.current.setAttribute("inert", "");
+    if (inputRef.current) inputRef.current.setAttribute("inert", "");
+    setSuggestions([]);
+    setPrompts((prev: number) => {
+      const next = prev + 1;
+      return next >= 255 ? 0 : next;
+    });
+  };
+
   const handleKeyDown = useKeyboardHandlers(
     inputRef,
     history,
     historyIndex,
     setHistoryIndex,
     setPrompts,
-    null,
-    null,
+    handleCtrlC,
+    setSuggestions,
     suggestions,
     selectedSuggestionIndex,
     setSelectedSuggestionIndex,

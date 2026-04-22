@@ -6,8 +6,8 @@ export function useKeyboardHandlers(
   historyIndex: number,
   setHistoryIndex: React.Dispatch<React.SetStateAction<number>>,
   setPrompts: (updater: ((prev: number) => number) | number) => void,
-  _tabCompletionState: unknown,
-  _setTabCompletionState: unknown,
+  onCtrlC: () => void,
+  setSuggestions: React.Dispatch<React.SetStateAction<string[]>>,
   suggestions: string[],
   selectedSuggestionIndex: number,
   setSelectedSuggestionIndex: React.Dispatch<React.SetStateAction<number>>,
@@ -15,6 +15,30 @@ export function useKeyboardHandlers(
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const input = inputRef.current;
     if (!input) return;
+
+    // Ctrl+C — cancel current input, show new prompt
+    if (e.ctrlKey && (e.key === "c" || e.key === "C")) {
+      e.preventDefault();
+      onCtrlC();
+      return;
+    }
+
+    // Ctrl+U — clear the line
+    if (e.ctrlKey && (e.key === "u" || e.key === "U")) {
+      e.preventDefault();
+      input.value = "";
+      setSuggestions([]);
+      setSelectedSuggestionIndex(-1);
+      return;
+    }
+
+    // Ctrl+L or Cmd+L — clear screen
+    if ((e.ctrlKey || e.metaKey) && (e.key === "l" || e.key === "L")) {
+      e.preventDefault();
+      setPrompts(0);
+      setPrompts((prev: number) => prev + 1);
+      return;
+    }
 
     switch (e.key) {
       case "ArrowUp": {
@@ -54,12 +78,6 @@ export function useKeyboardHandlers(
         input.value = suggestions[nextIndex];
         break;
       }
-    }
-
-    if ((e.ctrlKey || e.metaKey) && (e.key === "l" || e.key === "L")) {
-      e.preventDefault();
-      setPrompts(0);
-      setPrompts((prev: number) => prev + 1);
     }
   };
 

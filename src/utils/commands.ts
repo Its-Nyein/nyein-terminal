@@ -1,4 +1,4 @@
-import { CREDITS, HELP } from "./texts";
+import { CREDITS, HELP, MAN_PAGES } from "./texts";
 import {
   getAbout,
   getGithub,
@@ -55,6 +55,13 @@ export async function command(input0: string, input1: string) {
       case "cp":
       case "mv":
         return `${input0}: permission denied: read-only file system`;
+      case "man": {
+        const cmd = input1.trim();
+        if (!cmd)
+          return "What manual page do you want?\nUsage: man &lt;command&gt;";
+        const page = MAN_PAGES[cmd];
+        return page || `No manual entry for ${cmd}`;
+      }
       case "grep":
       case "which":
       case "find":
@@ -132,6 +139,7 @@ export function getAllCommands(): string[] {
     "ls",
     "cat",
     "tree",
+    "man",
     "grep",
     "which",
     "find",

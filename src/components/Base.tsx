@@ -8,10 +8,12 @@ export function Base() {
   const [prompts, setPrompts] = useState<number>(1);
   const [history, setHistory] = useState<string[]>([]);
   const [showBanner, setShowBanner] = useState<boolean>(true);
+  const [ready, setReady] = useState<boolean>(false);
 
   useEffect(() => {
     loadConfig().then((config) => {
       if (config) initFilesystem(config);
+      setReady(true);
     });
   }, []);
 
@@ -34,6 +36,8 @@ export function Base() {
   };
 
   const promptList = Array.from({ length: prompts }, (_, i) => i);
+
+  if (!ready) return null;
 
   return (
     <div>
