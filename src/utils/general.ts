@@ -1,3 +1,9 @@
+import {
+  listAliases,
+  removeAlias,
+  resolveAlias,
+  setAlias,
+} from "./aliases";
 import { command } from "./commands";
 import { loadConfig } from "./fetch";
 import { getCwd } from "./filesystem";
@@ -66,11 +72,79 @@ export async function handleGeneralCommands(
     if (config) configCacheRef = config;
   }
 
+  // Handle alias/unalias commands before alias resolution
+  const [rawCmd, ...rawRest] = sanitized.split(" ");
+  const rawArgs = rawRest.join(" ");
+
+  if (rawCmd === "alias") {
+    if (!rawArgs.trim()) {
+      setOut(listAliases());
+    } else {
+      const eqIndex = rawArgs.indexOf("=");
+      if (eqIndex === -1) {
+        setOut(`Usage: alias name='command'\n\neg: alias ll='ls'`);
+      } else {
+        const name = rawArgs.slice(0, eqIndex).trim();
+        let val = rawArgs.slice(eqIndex + 1).trim();
+        if (
+          (val.startsWith("'") && val.endsWith("'")) ||
+          (val.startsWith('"') && val.endsWith('"'))
+        ) {
+          val = val.slice(1, -1);
+        }
+        setAlias(name, val);
+        setOut(`alias ${name}='${val}'`);
+      }
+    }
+
+    updateHistory((hist) => {
+      if (sanitized.length > 0 && hist[0] !== sanitized) {
+        const newHist = [sanitized, ...hist];
+        if (newHist.length > 20) newHist.pop();
+        return newHist;
+      }
+      return hist;
+    });
+    setPrompts((prev: number) => {
+      const next = prev + 1;
+      return next >= 255 ? 0 : next;
+    });
+    return;
+  }
+
+  if (rawCmd === "unalias") {
+    const name = rawArgs.trim();
+    if (!name) {
+      setOut("Usage: unalias name");
+    } else if (removeAlias(name)) {
+      setOut(`Removed alias: ${name}`);
+    } else {
+      setOut(`unalias: ${name}: not found`);
+    }
+
+    updateHistory((hist) => {
+      if (sanitized.length > 0 && hist[0] !== sanitized) {
+        const newHist = [sanitized, ...hist];
+        if (newHist.length > 20) newHist.pop();
+        return newHist;
+      }
+      return hist;
+    });
+    setPrompts((prev: number) => {
+      const next = prev + 1;
+      return next >= 255 ? 0 : next;
+    });
+    return;
+  }
+
+  // Resolve aliases for other commands
+  const resolved = resolveAlias(sanitized);
+
   // Check for pipe
-  const pipeIndex = sanitized.indexOf(" | ");
+  const pipeIndex = resolved.indexOf(" | ");
   if (pipeIndex !== -1) {
-    const leftRaw = sanitized.slice(0, pipeIndex).trim();
-    const rightRaw = sanitized.slice(pipeIndex + 3).trim();
+    const leftRaw = resolved.slice(0, pipeIndex).trim();
+    const rightRaw = resolved.slice(pipeIndex + 3).trim();
     const [rightCmd, ...rightRest] = rightRaw.split(" ");
     const rightArgs = rightRest.join(" ");
 
@@ -106,7 +180,7 @@ export async function handleGeneralCommands(
     return;
   }
 
-  const [cmd, ...rest] = sanitized.split(" ");
+  const [cmd, ...rest] = resolved.split(" ");
   const args = rest.join(" ");
 
   switch (cmd) {

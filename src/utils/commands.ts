@@ -162,6 +162,8 @@ export function getAllCommands(): string[] {
     "history",
     "theme",
     "wal",
+    "alias",
+    "unalias",
   ];
 }
 
