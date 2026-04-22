@@ -86,13 +86,15 @@ export async function command(input0: string, input1: string) {
         return "Exit.";
       case "echo": {
         let output = input1.trim();
-        if (
-          (output.startsWith("'") && output.endsWith("'")) ||
-          (output.startsWith('"') && output.endsWith('"'))
-        ) {
+        // Single quotes: no expansion
+        if (output.startsWith("'") && output.endsWith("'")) {
+          return output.slice(1, -1);
+        }
+        // Double quotes: strip quotes but allow expansion
+        if (output.startsWith('"') && output.endsWith('"')) {
           output = output.slice(1, -1);
         }
-        return output;
+        return `__ENV_EXPAND__${output}`;
       }
       case "":
         return "";
