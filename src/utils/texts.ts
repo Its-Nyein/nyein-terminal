@@ -21,6 +21,7 @@ Hello, welcome to <u class="blu semibold">Nyein Terminal</u> [WIP]. Type one of 
   <span class="rd semibold">clear</span> - Clear screen
 
 You can use <i>arrow keys</i> to scroll through history.
+Click <span class="grn semibold">+</span> to open a new tab. Each tab has its own history and working directory.
 Visit my website: <a href="https://nyeinphyoaung.com" target="_blank" class="blu semibold">nyeinphyoaung.com</a>
 `;
 

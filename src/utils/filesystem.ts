@@ -1,7 +1,27 @@
 import type { Config, FSNode } from "../types/structs";
 
 let root: FSNode = { name: "~", type: "directory", children: [] };
-let cwdSegments: string[] = ["~"];
+let activeTabId: string = "tab-0";
+const tabCwdMap: Map<string, string[]> = new Map([["tab-0", ["~"]]]);
+
+function getCwdSegments(): string[] {
+  return tabCwdMap.get(activeTabId) || ["~"];
+}
+
+function setCwdSegments(segments: string[]): void {
+  tabCwdMap.set(activeTabId, segments);
+}
+
+export function setActiveTab(tabId: string): void {
+  activeTabId = tabId;
+  if (!tabCwdMap.has(tabId)) {
+    tabCwdMap.set(tabId, ["~"]);
+  }
+}
+
+export function removeTab(tabId: string): void {
+  tabCwdMap.delete(tabId);
+}
 
 function slugify(text: string): string {
   return text
@@ -79,7 +99,7 @@ export function initFilesystem(config: Config): void {
 }
 
 export function getCwd(): string {
-  return cwdSegments.join("/");
+  return getCwdSegments().join("/");
 }
 
 function resolveSegments(pathStr: string): string[] | null {
@@ -94,7 +114,7 @@ function resolveSegments(pathStr: string): string[] | null {
   } else if (pathStr.startsWith("/")) {
     segments = ["~", ...pathStr.slice(1).split("/").filter(Boolean)];
   } else {
-    segments = [...cwdSegments, ...pathStr.split("/").filter(Boolean)];
+    segments = [...getCwdSegments(), ...pathStr.split("/").filter(Boolean)];
   }
 
   // Resolve . and ..
@@ -137,12 +157,14 @@ export function changeDirectory(pathStr: string): string | null {
   if (!node) return `cd: no such file or directory: ${pathStr}`;
   if (node.type !== "directory") return `cd: not a directory: ${pathStr}`;
 
-  cwdSegments = segments;
+  setCwdSegments(segments);
   return null;
 }
 
 export function listDirectory(pathStr?: string): string {
-  const node = pathStr ? resolvePath(pathStr) : getNodeAtSegments(cwdSegments);
+  const node = pathStr
+    ? resolvePath(pathStr)
+    : getNodeAtSegments(getCwdSegments());
 
   if (!node) return `ls: cannot access '${pathStr}': No such file or directory`;
   if (node.type === "file") return node.name;
@@ -170,7 +192,9 @@ export function printWorkingDirectory(): string {
 }
 
 export function getTree(pathStr?: string, prefix?: string): string {
-  const node = pathStr ? resolvePath(pathStr) : getNodeAtSegments(cwdSegments);
+  const node = pathStr
+    ? resolvePath(pathStr)
+    : getNodeAtSegments(getCwdSegments());
   if (!node) return `tree: '${pathStr}': No such file or directory`;
   if (node.type === "file") return node.name;
   if (!node.children || node.children.length === 0)
@@ -224,7 +248,7 @@ export function getPathCompletions(partial: string): string[] {
   }
 
   const dirNode =
-    dirPath === "" ? getNodeAtSegments(cwdSegments) : resolvePath(dirPath);
+    dirPath === "" ? getNodeAtSegments(getCwdSegments()) : resolvePath(dirPath);
 
   if (!dirNode || dirNode.type !== "directory" || !dirNode.children) return [];
 
