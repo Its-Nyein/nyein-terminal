@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { banner } from "../utils/commands";
 import { buildPrompt } from "../utils/fetch";
 import "../styles/styles.css";
@@ -45,9 +45,9 @@ export function Banner() {
   const prompt = buildPrompt();
   const lastLogin = getLastLogin();
 
-  const lines = useRef(splitBannerLines(bannerText));
+  const lines = useMemo(() => splitBannerLines(bannerText), [bannerText]);
   const [visibleCount, setVisibleCount] = useState(0);
-  const done = visibleCount >= lines.current.length;
+  const done = visibleCount >= lines.length;
 
   useEffect(() => {
     if (done) return;
@@ -57,7 +57,7 @@ export function Banner() {
     return () => clearTimeout(timer);
   }, [visibleCount, done]);
 
-  const visibleHtml = lines.current.slice(0, visibleCount).join("\n");
+  const visibleHtml = lines.slice(0, visibleCount).join("\n");
 
   return (
     <>
