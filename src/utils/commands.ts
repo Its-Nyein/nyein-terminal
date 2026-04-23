@@ -78,6 +78,17 @@ export async function command(input0: string, input1: string) {
       case "sudo":
       case "chmod":
         return "With great power comes great responsibility.";
+      case "date":
+        return new Date().toString();
+      case "uptime": {
+        const ms = performance.now();
+        const secs = Math.floor(ms / 1000);
+        const mins = Math.floor(secs / 60);
+        const hrs = Math.floor(mins / 60);
+        if (hrs > 0) return `up ${hrs}h ${mins % 60}m ${secs % 60}s`;
+        if (mins > 0) return `up ${mins}m ${secs % 60}s`;
+        return `up ${secs}s`;
+      }
       case "whoami": {
         const config = await loadConfig();
         return config?.username || "user";
@@ -98,12 +109,53 @@ export async function command(input0: string, input1: string) {
       }
       case "":
         return "";
-      default:
+      default: {
+        const suggestion = findClosestCommand(input0);
+        if (suggestion) {
+          return `Unknown command: ${input0}\nDid you mean: <span class="grn semibold">${suggestion}</span>?`;
+        }
         return `Unknown command: ${input0}`;
+      }
     }
   })();
 
   return result;
+}
+
+function levenshtein(a: string, b: string): number {
+  const m = a.length;
+  const n = b.length;
+  const dp: number[][] = Array.from({ length: m + 1 }, () =>
+    Array(n + 1).fill(0),
+  );
+
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] =
+        a[i - 1] === b[j - 1]
+          ? dp[i - 1][j - 1]
+          : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+    }
+  }
+  return dp[m][n];
+}
+
+function findClosestCommand(input: string): string | null {
+  const commands = getAllCommands();
+  let best: string | null = null;
+  let bestDist = Infinity;
+
+  for (const cmd of commands) {
+    const dist = levenshtein(input.toLowerCase(), cmd);
+    if (dist < bestDist && dist <= 2) {
+      bestDist = dist;
+      best = cmd;
+    }
+  }
+  return best;
 }
 
 const FS_COMMANDS = [
@@ -156,6 +208,8 @@ export function getAllCommands(): string[] {
     "sudo",
     "chmod",
     "whoami",
+    "date",
+    "uptime",
     "exit",
     "echo",
     "clear",

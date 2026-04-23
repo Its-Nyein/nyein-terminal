@@ -180,11 +180,18 @@ export function listDirectory(pathStr?: string): string {
     .join("  ");
 }
 
+function autoLinkUrls(text: string): string {
+  return text.replace(
+    /(https?:\/\/[^\s<]+)/g,
+    '<a href="$1" target="_blank" class="blu semibold">$1</a>',
+  );
+}
+
 export function readFile(pathStr: string): string {
   const node = resolvePath(pathStr);
   if (!node) return `cat: ${pathStr}: No such file or directory`;
   if (node.type === "directory") return `cat: ${pathStr}: Is a directory`;
-  return escapeHtml(node.content || "");
+  return autoLinkUrls(escapeHtml(node.content || ""));
 }
 
 export function printWorkingDirectory(): string {

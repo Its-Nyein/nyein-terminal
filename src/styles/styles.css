@@ -28,7 +28,7 @@ input {
   font-size: 100%;
   outline: none;
   border: none;
-  width: 460px;
+  width: min(460px, calc(100vw - 200px));
 }
 
 input:disabled {
@@ -157,6 +157,18 @@ pre .ascii {
 }
 
 @media (max-width: 768px) {
+  * {
+    font-size: 14px;
+  }
+
+  input {
+    width: calc(100vw - 160px);
+  }
+
+  .inline {
+    font-size: 13px;
+  }
+
   .links-container {
     gap: 6px;
   }
@@ -164,6 +176,51 @@ pre .ascii {
   .link-item {
     gap: 4px;
     word-break: break-word;
+  }
+
+  .about {
+    flex: 0 0 100%;
+    outline-offset: 15px;
+  }
+
+  .ascii {
+    flex: 0 0 100%;
+    margin: 10px 0;
+    font-size: 10px !important;
+  }
+
+  .text {
+    flex: 0 0 100%;
+    margin: 10px 0;
+    max-width: 100%;
+  }
+
+  .blocks {
+    font-size: 22px;
+  }
+
+  .tab-bar {
+    height: 32px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .tab-item {
+    font-size: 12px;
+    padding: 4px 10px;
+    white-space: nowrap;
+  }
+
+  .terminal-content {
+    padding: 6px;
+  }
+
+  .suggestions-container {
+    gap: 8px;
+  }
+
+  .suggestion-item {
+    font-size: 13px;
   }
 }
 
