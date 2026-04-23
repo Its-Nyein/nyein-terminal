@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Banner } from "./Banner";
 import { Prompt } from "./Prompt";
+import { loadAliases } from "../utils/aliases";
 import { loadConfig } from "../utils/fetch";
 import { initFilesystem } from "../utils/filesystem";
 
@@ -11,6 +12,7 @@ export function Base() {
   const [ready, setReady] = useState<boolean>(false);
 
   useEffect(() => {
+    loadAliases();
     loadConfig().then((config) => {
       if (config) initFilesystem(config);
       setReady(true);
