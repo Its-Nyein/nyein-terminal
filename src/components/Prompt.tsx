@@ -9,9 +9,15 @@ interface PromptProps {
   setPrompts: (updater: ((prev: number) => number) | number) => void;
   updateHistory: (updater: (hist: string[]) => string[]) => void;
   history: string[];
+  isActive?: boolean;
 }
 
-export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
+export function Prompt({
+  setPrompts,
+  updateHistory,
+  history,
+  isActive = true,
+}: PromptProps) {
   const [out, setOut] = useState<string>("");
   const [historyIndex, setHistoryIndex] = useState<number>(0);
   const [prompt] = useState<string>(() => buildPrompt());
@@ -45,14 +51,14 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
   }, [isSubmitted]);
 
   useEffect(() => {
-    if (inputRef.current && !isSubmitted) {
+    if (inputRef.current && !isSubmitted && isActive) {
       inputRef.current.focus();
     }
-  }, [isSubmitted]);
+  }, [isSubmitted, isActive]);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (inputRef.current && !isSubmitted) {
+      if (inputRef.current && !isSubmitted && isActive) {
         const target = e.target as HTMLElement;
         const tagName = target.tagName;
         const isInteractive =
@@ -80,7 +86,7 @@ export function Prompt({ setPrompts, updateHistory, history }: PromptProps) {
     return () => {
       document.removeEventListener("click", handleClick);
     };
-  }, [isSubmitted]);
+  }, [isSubmitted, isActive]);
 
   const handleCtrlC = () => {
     setIsSubmitted(true);

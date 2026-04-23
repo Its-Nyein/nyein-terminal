@@ -67,6 +67,59 @@ export async function handleGeneralCommands(
     if (config) configCacheRef = config;
   }
 
+  // Handle && chaining — split and execute each command sequentially
+  if (sanitized.includes(" && ")) {
+    const parts = sanitized
+      .split(" && ")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const outputs: string[] = [];
+
+    for (const part of parts) {
+      let partOutput = "";
+      const partResult = await executeCommand(
+        resolveAlias(part),
+        history,
+        nextTheme,
+        setPrompts,
+      );
+      let result = partResult;
+      if (result.startsWith("__ENV_EXPAND__")) {
+        result = expandEnvVars(result.slice(14));
+      }
+      partOutput = result;
+
+      // Stop chain if command produced an error
+      if (
+        partOutput.startsWith("cd: ") ||
+        partOutput.startsWith("cat: ") ||
+        partOutput.startsWith("ls: ") ||
+        partOutput.includes("Unknown command:") ||
+        partOutput.includes("permission denied")
+      ) {
+        outputs.push(partOutput);
+        break;
+      }
+      if (partOutput) outputs.push(partOutput);
+    }
+
+    setOut(outputs.join("\n"));
+
+    updateHistory((hist) => {
+      if (sanitized.length > 0 && hist[0] !== sanitized) {
+        const newHist = [sanitized, ...hist];
+        if (newHist.length > 20) newHist.pop();
+        return newHist;
+      }
+      return hist;
+    });
+    setPrompts((prev: number) => {
+      const next = prev + 1;
+      return next >= 255 ? 0 : next;
+    });
+    return;
+  }
+
   // Handle alias/unalias commands before alias resolution
   const [rawCmd, ...rawRest] = sanitized.split(" ");
   const rawArgs = rawRest.join(" ");
